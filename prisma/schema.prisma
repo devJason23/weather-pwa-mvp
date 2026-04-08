@@ -1,0 +1,317 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum GameStatus {
+  DRAFT
+  IN_REVIEW
+  OFFICIAL
+}
+
+enum ProcessingStatus {
+  UPLOADED
+  QUEUED
+  PROCESSING
+  DRAFT_READY
+  REVIEW_NEEDED
+  OFFICIAL
+  FAILED
+}
+
+enum ProcessingJobType {
+  VIDEO_INGESTION
+  AI_EXTRACTION
+  REVIEW_ROUTING
+  OFFICIAL_STAT_REBUILD
+}
+
+enum TeamSide {
+  HOME
+  AWAY
+  NONE
+}
+
+enum ShotType {
+  TWO
+  THREE
+  FREE_THROW
+  NONE
+}
+
+enum EventType {
+  SHOT_ATTEMPT
+  SHOT_MADE
+  SHOT_MISSED
+  FREE_THROW
+  TEAM_SCORE_UPDATE
+  NO_EVENT
+}
+
+enum ReviewStatus {
+  PENDING
+  CONFIRMED
+  CORRECTED
+  SKIPPED
+}
+
+enum ReviewReason {
+  LOW_CONFIDENCE_TEAM
+  LOW_CONFIDENCE_ATTEMPT
+  LOW_CONFIDENCE_RESULT
+  LOW_CONFIDENCE_PLAYER
+  LOW_CONFIDENCE_SHOT_TYPE
+  LOW_CONFIDENCE_FREE_THROW
+  SCORE_MISMATCH
+  IDENTITY_CONFLICT
+  MANUAL_QA
+}
+
+enum CorrectionReason {
+  AI_FALSE_POSITIVE
+  PLAYER_MISIDENTIFIED
+  TEAM_MISASSIGNED
+  SHOT_RESULT_FIXED
+  SHOT_TYPE_FIXED
+  SCORE_RECONCILED
+  REVIEWER_JUDGMENT
+}
+
+model AdminUser {
+  id          String           @id @default(cuid())
+  email       String           @unique
+  name        String
+  createdAt   DateTime         @default(now())
+  createdGames Game[]
+  auditLogs   AuditLog[]
+  reviewDecisions ReviewDecision[]
+}
+
+model Team {
+  id         String       @id @default(cuid())
+  name       String
+  ageGroup   String
+  season     String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  players    Player[]
+  games      Game[]
+
+  @@unique([name, ageGroup, season])
+}
+
+model Player {
+  id           String       @id @default(cuid())
+  teamId       String
+  firstName    String
+  lastName     String
+  jerseyNumber Int
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  team         Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  rosterGames  GameRosterPlayer[]
+  draftEvents  DraftEvent[]
+  reviewItems  ReviewItem[] @relation("ReviewProposedPlayer")
+  reviewFinals ReviewDecision[] @relation("DecisionPlayer")
+  officialStats OfficialStatLine[]
+
+  @@unique([teamId, jerseyNumber])
+}
+
+model Opponent {
+  id         String    @id @default(cuid())
+  name       String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  games      Game[]
+}
+
+model Game {
+  id               String             @id @default(cuid())
+  teamId           String
+  opponentId       String
+  adminUserId      String?
+  gameDate         DateTime
+  location         String?
+  teamColor        String
+  opponentColor    String
+  status           GameStatus         @default(DRAFT)
+  processingStatus ProcessingStatus   @default(UPLOADED)
+  shadowMode       Boolean            @default(true)
+  publishedAt      DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  team             Team               @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  opponent         Opponent           @relation(fields: [opponentId], references: [id], onDelete: Cascade)
+  adminUser        AdminUser?         @relation(fields: [adminUserId], references: [id])
+  rosterPlayers    GameRosterPlayer[]
+  videoAssets      VideoAsset[]
+  processingJobs   ProcessingJob[]
+  draftEvents      DraftEvent[]
+  reviewItems      ReviewItem[]
+  officialStats    OfficialStatLine[]
+  auditLogs        AuditLog[]
+}
+
+model GameRosterPlayer {
+  id          String   @id @default(cuid())
+  gameId       String
+  playerId     String
+  jerseyNumber Int
+  createdAt    DateTime @default(now())
+  game         Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player       Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, playerId])
+}
+
+model VideoAsset {
+  id               String           @id @default(cuid())
+  gameId            String
+  storageKey        String
+  originalFileName  String
+  contentType       String
+  sizeBytes         Int
+  uploadStatus      ProcessingStatus @default(UPLOADED)
+  createdAt         DateTime         @default(now())
+  game              Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
+
+model ProcessingJob {
+  id          String            @id @default(cuid())
+  gameId       String
+  jobType      ProcessingJobType
+  status       ProcessingStatus
+  detail       String?
+  queuedAt     DateTime         @default(now())
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  game         Game             @relation(fields: [gameId], references: [id], onDelete: Cascade)
+}
+
+model DraftEvent {
+  id                  String      @id @default(cuid())
+  gameId              String
+  playerId            String?
+  sourceVideoAssetId  String?
+  sequenceNumber      Int
+  timestampSeconds    Int
+  clipUrl             String?
+  eventType           EventType
+  teamSide            TeamSide
+  shotType            ShotType
+  shotMade            Boolean?
+  aiConfidence        Float
+  confidenceTeam      Float?
+  confidenceAttempt   Float?
+  confidenceResult    Float?
+  confidencePlayer    Float?
+  confidenceShotType  Float?
+  confidenceFreeThrow Float?
+  autoAccepted        Boolean      @default(false)
+  reviewRequired      Boolean      @default(false)
+  reviewReason        ReviewReason?
+  aiPayload           Json
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  game                Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player              Player?      @relation(fields: [playerId], references: [id], onDelete: SetNull)
+  reviewItem          ReviewItem?
+}
+
+model ReviewItem {
+  id                   String          @id @default(cuid())
+  gameId               String
+  draftEventId         String          @unique
+  proposedPlayerId     String?
+  timestampSeconds     Int
+  clipUrl              String?
+  aiEventType          EventType
+  aiConfidence         Float
+  proposedTeamSide     TeamSide
+  proposedShotMade     Boolean?
+  proposedShotType     ShotType
+  reviewReason         ReviewReason
+  status               ReviewStatus    @default(PENDING)
+  note                 String?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  game                 Game            @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  draftEvent           DraftEvent      @relation(fields: [draftEventId], references: [id], onDelete: Cascade)
+  proposedPlayer       Player?         @relation("ReviewProposedPlayer", fields: [proposedPlayerId], references: [id], onDelete: SetNull)
+  decisions            ReviewDecision[]
+}
+
+model ReviewDecision {
+  id               String           @id @default(cuid())
+  reviewItemId     String
+  reviewerId       String
+  status           ReviewStatus
+  finalEventType   EventType
+  finalPlayerId    String?
+  finalTeamSide    TeamSide
+  finalShotMade    Boolean?
+  finalShotType    ShotType
+  note             String?
+  correctionReason CorrectionReason?
+  createdAt        DateTime         @default(now())
+  reviewItem       ReviewItem       @relation(fields: [reviewItemId], references: [id], onDelete: Cascade)
+  reviewer         AdminUser        @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  finalPlayer      Player?          @relation("DecisionPlayer", fields: [finalPlayerId], references: [id], onDelete: SetNull)
+}
+
+model OfficialStatLine {
+  id             String    @id @default(cuid())
+  gameId         String
+  playerId       String?
+  teamSide       TeamSide
+  points         Int       @default(0)
+  fgm            Int       @default(0)
+  fga            Int       @default(0)
+  threePm        Int       @default(0)
+  threePa        Int       @default(0)
+  ftm            Int       @default(0)
+  fta            Int       @default(0)
+  finalScore     Int       @default(0)
+  timeline       Json
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  game           Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player         Player?   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, playerId, teamSide])
+}
+
+model ConfidencePolicy {
+  id             String   @id @default(cuid())
+  eventType      EventType
+  policyKey      String
+  threshold      Float
+  autoAccept     Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([eventType, policyKey])
+}
+
+model AuditLog {
+  id                  String    @id @default(cuid())
+  gameId              String
+  draftEventId        String?
+  reviewItemId        String?
+  reviewDecisionId    String?
+  reviewerId          String?
+  originalPrediction  Json
+  confidenceScore     Float?
+  reviewerAction      String
+  correctedValue      Json?
+  correctionReason    CorrectionReason?
+  note                String?
+  createdAt           DateTime  @default(now())
+  game                Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  reviewer            AdminUser? @relation(fields: [reviewerId], references: [id], onDelete: SetNull)
+}
