@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { EventType, ReviewStatus } from "@prisma/client";
 import { AppShell } from "@/components/app-shell";
 import { ReviewDecisionForm } from "@/components/forms";
