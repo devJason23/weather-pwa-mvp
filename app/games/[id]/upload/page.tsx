@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { VideoUploadForm } from "@/components/forms";
