@@ -4,7 +4,7 @@ import { signOut } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Dashboard" },
+    { href: "/dashboard", label: "Dashboard" },
   { href: "/teams", label: "Teams" },
   { href: "/games", label: "Games" },
   { href: "/review", label: "Review Queue" },
