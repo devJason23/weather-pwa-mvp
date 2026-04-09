@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { AppShell } from "@/components/app-shell";
 import { PlayerForm, TeamForm } from "@/components/forms";
 import { Card, Table } from "@/components/ui";
