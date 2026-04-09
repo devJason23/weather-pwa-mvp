@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from "next/link";
 import type { Route } from "next";
 import { GameStatus, ReviewStatus } from "@prisma/client";
