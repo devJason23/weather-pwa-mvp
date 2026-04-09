@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { ReviewStatus } from "@prisma/client";
 import { AppShell } from "@/components/app-shell";
 import { Card, StatCard } from "@/components/ui";
