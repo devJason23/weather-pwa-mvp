@@ -55,13 +55,13 @@ export default async function MetricsPage() {
         <Card title="Top review reasons" subtitle="Useful for model calibration and worker prioritization.">
           <div className="space-y-3">
             {topReasons.map(([reason, count]) => (
-              <div key={reason} className="rounded-2xl border border-line bg-mist/60 p-4">
+              <div key={reason} className="hs-subtle p-4">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-sm font-semibold text-ink">{reviewReasonLabel[reason as keyof typeof reviewReasonLabel]}</span>
-                  <span className="text-sm text-slate/70">{count}</span>
+                  <span className="text-sm font-semibold text-brand-ink">{reviewReasonLabel[reason as keyof typeof reviewReasonLabel]}</span>
+                  <span className="text-sm text-brand-muted">{count}</span>
                 </div>
                 <div className="mt-3 h-2 rounded-full bg-white">
-                  <div className="h-2 rounded-full bg-accent" style={{ width: `${(count / Math.max(topReasons[0]?.[1] ?? 1, 1)) * 100}%` }} />
+                  <div className="h-2 rounded-full bg-brand-green" style={{ width: `${(count / Math.max(topReasons[0]?.[1] ?? 1, 1)) * 100}%` }} />
                 </div>
               </div>
             ))}
@@ -69,7 +69,7 @@ export default async function MetricsPage() {
         </Card>
 
         <Card title="Operational notes" subtitle="How to read these metrics during MVP calibration.">
-          <div className="space-y-3 text-sm text-slate/75">
+          <div className="space-y-3 text-sm text-brand-muted">
             <p>Override rate measures how often reviewers had to correct AI output instead of confirming it.</p>
             <p>Items per game highlights review burden and helps compare confidence policy tuning between runs.</p>
             <p>Top review reasons are persisted so later model evaluation can target the biggest trust gaps first.</p>

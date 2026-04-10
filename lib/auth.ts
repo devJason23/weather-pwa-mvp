@@ -1,23 +1,13 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { createHash, timingSafeEqual } from "crypto";
 import { redirect } from "next/navigation";
 import { env } from "@/lib/env";
+import { constantCompare, COOKIE_NAME, sessionToken } from "@/lib/session";
 
-const COOKIE_NAME = "courtreview_session";
-
-function sessionToken() {
-  return createHash("sha256").update(`${env.ADMIN_EMAIL}:${env.SESSION_SECRET}`).digest("hex");
-}
-
-function constantCompare(a: string, b: string) {
-  const left = Buffer.from(a);
-  const right = Buffer.from(b);
-  if (left.length !== right.length) {
-    return false;
-  }
-  return timingSafeEqual(left, right);
+async function hasValidAdminSession() {
+  const token = (await cookies()).get(COOKIE_NAME)?.value;
+  return Boolean(token && constantCompare(token, sessionToken(env.ADMIN_EMAIL, env.SESSION_SECRET)));
 }
 
 export async function signIn(formData: FormData) {
@@ -28,14 +18,14 @@ export async function signIn(formData: FormData) {
     redirect("/login?error=invalid");
   }
 
-  (await cookies()).set(COOKIE_NAME, sessionToken(), {
+  (await cookies()).set(COOKIE_NAME, sessionToken(env.ADMIN_EMAIL, env.SESSION_SECRET), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/"
   });
 
-  redirect("/");
+  redirect("/admin");
 }
 
 export async function signOut() {
@@ -44,8 +34,7 @@ export async function signOut() {
 }
 
 export async function requireAdmin() {
-  const token = (await cookies()).get(COOKIE_NAME)?.value;
-  if (!token || !constantCompare(token, sessionToken())) {
+  if (!(await hasValidAdminSession())) {
     redirect("/login");
   }
 

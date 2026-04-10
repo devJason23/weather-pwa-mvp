@@ -1,6 +1,6 @@
-# CourtReview AI -- Codex Spec
+# HoopSmith -- Codex Spec
 
-Build a production-quality MVP web app called **CourtReview AI**.
+Build a production-quality MVP web app called **HoopSmith**.
 
 ## Goal
 

@@ -32,18 +32,18 @@ export default async function TeamsPage() {
         {teams.map((team) => (
           <Card key={team.id} title={`${team.name} ${team.ageGroup}`} subtitle={`Season ${team.season}`}>
             <Table>
-              <table className="min-w-full divide-y divide-line text-sm">
-                <thead className="bg-mist/70 text-left text-slate/70">
+              <table>
+                <thead>
                   <tr>
-                    <th className="px-4 py-3">Jersey</th>
-                    <th className="px-4 py-3">Player</th>
+                    <th>Jersey</th>
+                    <th>Player</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-line">
+                <tbody>
                   {team.players.map((player) => (
                     <tr key={player.id}>
-                      <td className="px-4 py-3">#{player.jerseyNumber}</td>
-                      <td className="px-4 py-3">
+                      <td>#{player.jerseyNumber}</td>
+                      <td>
                         {player.firstName} {player.lastName}
                       </td>
                     </tr>

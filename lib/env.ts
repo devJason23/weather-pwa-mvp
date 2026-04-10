@@ -10,7 +10,7 @@ const envSchema = z.object({
     .optional()
     .transform((value) => value === "true"),
   STORAGE_DRIVER: z.string().default("local"),
-  NEXT_PUBLIC_APP_NAME: z.string().default("CourtReview AI")
+  NEXT_PUBLIC_APP_NAME: z.string().default("HoopSmith")
 });
 
 export const env = envSchema.parse({

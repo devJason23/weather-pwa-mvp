@@ -92,34 +92,34 @@ export default async function ReviewPage({ searchParams }: { searchParams: Searc
             <option value="low">Below 90%</option>
             <option value="high">90% and above</option>
           </select>
-          <button className="w-fit rounded-lg bg-slate px-4 py-2 text-sm font-semibold text-white">Apply filters</button>
+          <button className="hs-button w-fit">Apply filters</button>
         </form>
       </Card>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <Card title="Queue" subtitle={`${items.length} review items in current filter set.`}>
           <Table>
-            <table className="min-w-full divide-y divide-line text-sm">
-              <thead className="bg-mist/70 text-left text-slate/70">
+            <table>
+              <thead>
                 <tr>
-                  <th className="px-4 py-3">Time</th>
-                  <th className="px-4 py-3">Reason</th>
-                  <th className="px-4 py-3">Status</th>
+                  <th>Time</th>
+                  <th>Reason</th>
+                  <th>Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line">
+              <tbody>
                 {items.map((item) => (
-                  <tr key={item.id} className={selected?.id === item.id ? "bg-accent/5" : ""}>
-                    <td className="px-4 py-3">
-                      <a className="font-medium text-accent" href={`/review?${new URLSearchParams({ ...Object.fromEntries(Object.entries(filters).filter(([, value]) => value)), item: item.id }).toString()}`}>
+                  <tr key={item.id} className={selected?.id === item.id ? "bg-brand-green/5" : ""}>
+                    <td>
+                      <a className="font-semibold text-brand-green hover:text-brand-green-deep" href={`/review?${new URLSearchParams({ ...Object.fromEntries(Object.entries(filters).filter(([, value]) => value)), item: item.id }).toString()}`}>
                         {formatClock(item.timestampSeconds)}
                       </a>
                     </td>
-                    <td className="px-4 py-3">
+                    <td>
                       <div>{reviewReasonLabel[item.reviewReason]}</div>
-                      <div className="text-xs text-slate/60">{Math.round(item.aiConfidence * 100)}%</div>
+                      <div className="text-xs text-brand-muted">{Math.round(item.aiConfidence * 100)}%</div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td>
                       <Badge tone={reviewStatusTone[item.status]}>{item.status}</Badge>
                     </td>
                   </tr>
@@ -138,7 +138,7 @@ export default async function ReviewPage({ searchParams }: { searchParams: Searc
               nextItemId={currentIndex >= 0 && currentIndex < items.length - 1 ? items[currentIndex + 1]?.id : undefined}
             />
           ) : (
-            <p className="text-sm text-slate/70">No review items match the current filters.</p>
+            <p className="text-sm text-brand-muted">No review items match the current filters.</p>
           )}
         </Card>
       </div>

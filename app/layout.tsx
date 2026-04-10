@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CourtReview AI",
-  description: "Trusted post-game basketball stat review workflow"
+  title: "HoopSmith",
+  description: "Basketball intelligence for post-game review, publishing, and player development"
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

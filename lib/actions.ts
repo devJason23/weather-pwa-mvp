@@ -6,8 +6,6 @@ import {
   CorrectionReason,
   EventType,
   Prisma,
-  ProcessingJobType,
-  ProcessingStatus,
   ReviewStatus,
   ShotType,
   TeamSide
@@ -17,7 +15,6 @@ import { prisma } from "@/lib/prisma";
 import { createAuditLog } from "@/lib/services/audit-log";
 import { rebuildOfficialStats } from "@/lib/services/official-stats";
 import { triggerMockProcessing } from "@/lib/services/video-processing";
-import { storageDriver } from "@/lib/storage";
 import {
   createGameSchema,
   opponentSchema,
@@ -105,38 +102,6 @@ export async function createGameAction(formData: FormData) {
 export async function uploadVideoAction(formData: FormData) {
   await requireAdmin();
   const gameId = String(formData.get("gameId"));
-  const file = formData.get("video");
-  if (!(file instanceof File) || file.size === 0) {
-    throw new Error("Please select a video file.");
-  }
-
-  const stored = await storageDriver.save(file);
-
-  await prisma.videoAsset.create({
-    data: {
-      gameId,
-      storageKey: stored.storageKey,
-      originalFileName: stored.originalFileName,
-      contentType: stored.contentType,
-      sizeBytes: stored.sizeBytes,
-      uploadStatus: ProcessingStatus.UPLOADED
-    }
-  });
-
-  await prisma.processingJob.create({
-    data: {
-      gameId,
-      jobType: ProcessingJobType.VIDEO_INGESTION,
-      status: ProcessingStatus.UPLOADED,
-      detail: stored.url
-    }
-  });
-
-  await prisma.game.update({
-    where: { id: gameId },
-    data: { processingStatus: ProcessingStatus.UPLOADED }
-  });
-
   revalidatePath(`/games/${gameId}`);
   redirect(`/games/${gameId}`);
 }

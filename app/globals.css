@@ -4,22 +4,160 @@
 
 :root {
   color-scheme: light;
+  --brand-green: #1f6b3a;
+  --brand-green-deep: #174f2b;
+  --brand-green-soft: #2d8a4d;
+  --brand-ink: #101418;
+  --brand-ink-soft: #1a1f24;
+  --brand-muted: #64707d;
+  --brand-line: #d7dde4;
+  --brand-surface: #ffffff;
+  --brand-surface-soft: #f5f8f7;
+  --brand-page: #f7faf9;
+  --brand-silver: #ced5dd;
+  --radius-panel: 1.5rem;
+  --radius-card: 1.25rem;
+  --shadow-soft: 0 18px 45px rgba(16, 20, 24, 0.06);
+  --shadow-panel: 0 28px 72px rgba(16, 20, 24, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-mist text-ink antialiased;
+  @apply antialiased;
+  background-color: var(--brand-page);
+  color: var(--brand-ink);
+  background-image:
+    radial-gradient(circle at top left, rgba(31, 107, 58, 0.08), transparent 26%),
+    linear-gradient(180deg, rgba(247, 250, 249, 1), rgba(240, 244, 243, 1));
+  font-feature-settings: "ss01" on, "cv02" on, "cv11" on;
 }
 
 a {
-  @apply text-accent hover:text-slate;
+  color: var(--brand-green);
+}
+
+a:hover {
+  color: var(--brand-green-deep);
 }
 
 input,
 select,
 textarea {
-  @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20;
+  @apply w-full rounded-2xl border bg-white px-4 py-3 text-sm shadow-sm outline-none transition duration-150;
+  border-color: var(--brand-line);
+  color: var(--brand-ink);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px rgba(31, 107, 58, 0.15);
 }
 
 button {
   @apply transition;
+}
+
+@layer components {
+  .hs-page {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .hs-panel {
+    @apply border bg-white;
+    border-radius: var(--radius-panel);
+    border-color: rgba(31, 107, 58, 0.1);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .hs-card {
+    @apply border bg-white;
+    border-radius: var(--radius-card);
+    border-color: rgba(31, 107, 58, 0.1);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .hs-subtle {
+    @apply border;
+    border-radius: var(--radius-card);
+    border-color: rgba(31, 107, 58, 0.1);
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .hs-button {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-white;
+    background: var(--brand-green);
+    letter-spacing: 0.01em;
+  }
+
+  .hs-button:hover {
+    background: var(--brand-green-deep);
+  }
+
+  .hs-button-secondary {
+    border: 1px solid rgba(31, 107, 58, 0.2);
+    @apply inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold;
+    color: var(--brand-green);
+  }
+
+  .hs-button-secondary:hover {
+    border-color: var(--brand-green);
+    background: rgba(31, 107, 58, 0.05);
+  }
+
+  .hs-button-ghost {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--brand-ink);
+  }
+
+  .hs-button-ghost:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+
+  .hs-kicker {
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em];
+    color: var(--brand-muted);
+  }
+
+  .hs-section {
+    @apply py-16 sm:py-20;
+  }
+
+  .hs-table {
+    @apply overflow-x-auto border bg-white;
+    border-radius: var(--radius-card);
+    border-color: rgba(31, 107, 58, 0.1);
+  }
+
+  .hs-table table {
+    @apply min-w-full text-sm;
+  }
+
+  .hs-table thead {
+    background: rgba(245, 248, 247, 0.9);
+    color: var(--brand-muted);
+  }
+
+  .hs-table th {
+    @apply px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.16em];
+  }
+
+  .hs-table td {
+    @apply px-4 py-3 align-top;
+  }
+
+  .hs-table tbody tr {
+    border-top: 1px solid rgba(31, 107, 58, 0.08);
+  }
 }

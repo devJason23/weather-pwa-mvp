@@ -13,26 +13,26 @@ export type NavItem = {
 };
 
 export const gameStatusTone: Record<GameStatus, string> = {
-  DRAFT: "bg-slate/10 text-slate",
-  IN_REVIEW: "bg-warning/10 text-warning",
-  OFFICIAL: "bg-success/10 text-success"
+  DRAFT: "bg-brand-ink/5 text-brand-ink-soft",
+  IN_REVIEW: "bg-brand-green/10 text-brand-green-deep",
+  OFFICIAL: "bg-brand-green text-white"
 };
 
 export const processingStatusTone: Record<ProcessingStatus, string> = {
-  UPLOADED: "bg-slate/10 text-slate",
-  QUEUED: "bg-warning/10 text-warning",
-  PROCESSING: "bg-warning/10 text-warning",
-  DRAFT_READY: "bg-accent/10 text-accent",
+  UPLOADED: "bg-brand-ink/5 text-brand-ink-soft",
+  QUEUED: "bg-brand-green/10 text-brand-green-deep",
+  PROCESSING: "bg-brand-green/15 text-brand-green-deep",
+  DRAFT_READY: "bg-brand-green-soft/15 text-brand-green-deep",
   REVIEW_NEEDED: "bg-danger/10 text-danger",
-  OFFICIAL: "bg-success/10 text-success",
+  OFFICIAL: "bg-brand-green text-white",
   FAILED: "bg-danger/10 text-danger"
 };
 
 export const reviewStatusTone: Record<ReviewStatus, string> = {
-  PENDING: "bg-warning/10 text-warning",
-  CONFIRMED: "bg-success/10 text-success",
-  CORRECTED: "bg-accent/10 text-accent",
-  SKIPPED: "bg-slate/10 text-slate"
+  PENDING: "bg-brand-green/10 text-brand-green-deep",
+  CONFIRMED: "bg-brand-green text-white",
+  CORRECTED: "bg-brand-green-soft/15 text-brand-green-deep",
+  SKIPPED: "bg-brand-ink/5 text-brand-ink-soft"
 };
 
 export const eventTypeLabel: Record<EventType, string> = {

@@ -32,38 +32,38 @@ export default async function GamesPage() {
         title="Game list"
         subtitle="Each game has a frozen roster snapshot and a strict draft-to-official lifecycle."
         action={
-          <Link className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white" href="/games/new">
+          <Link className="hs-button" href="/games/new">
             New game
           </Link>
         }
       >
         <Table>
-          <table className="min-w-full divide-y divide-line text-sm">
-            <thead className="bg-mist/70 text-left text-slate/70">
+          <table>
+            <thead>
               <tr>
-                <th className="px-4 py-3">Matchup</th>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Processing</th>
-                <th className="px-4 py-3">Review</th>
+                <th>Matchup</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Processing</th>
+                <th>Review</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line bg-white">
+            <tbody>
               {games.map((game) => (
                 <tr key={game.id}>
-                  <td className="px-4 py-3">
-                    <Link className="font-medium text-accent" href={`/games/${game.id}` as Route}>
+                  <td>
+                    <Link className="font-semibold text-brand-green hover:text-brand-green-deep" href={`/games/${game.id}` as Route}>
                       {game.team.name} vs {game.opponent.name}
                     </Link>
                   </td>
-                  <td className="px-4 py-3">{formatDate(game.gameDate)}</td>
-                  <td className="px-4 py-3">
+                  <td>{formatDate(game.gameDate)}</td>
+                  <td>
                     <Badge tone={gameStatusTone[game.status]}>{game.status}</Badge>
                   </td>
-                  <td className="px-4 py-3">
+                  <td>
                     <Badge tone={processingStatusTone[game.processingStatus]}>{game.processingStatus}</Badge>
                   </td>
-                  <td className="px-4 py-3">{game._count.reviewItems} items / {game._count.draftEvents} events</td>
+                  <td>{game._count.reviewItems} items / {game._count.draftEvents} events</td>
                 </tr>
               ))}
             </tbody>

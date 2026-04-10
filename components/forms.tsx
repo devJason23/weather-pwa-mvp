@@ -15,21 +15,18 @@ import {
   createPlayerAction,
   createTeamAction,
   submitReviewDecisionAction,
-  triggerProcessingAction,
-  uploadVideoAction
+  triggerProcessingAction
 } from "@/lib/actions";
 import { reviewDefaults } from "@/lib/review-defaults";
 import { correctionReasonLabel, eventTypeLabel, reviewReasonLabel } from "@/lib/types";
 
 export function TeamForm() {
   return (
-    <form action={createTeamAction} className="grid gap-3 md:grid-cols-3">
+    <form action={createTeamAction} className="grid gap-3 md:grid-cols-[1.2fr_0.8fr_0.9fr_auto]">
       <input name="name" placeholder="Team name" required />
       <input name="ageGroup" placeholder="Age group" required />
-      <div className="flex gap-3">
-        <input name="season" placeholder="Season" required />
-        <button className="rounded-lg bg-slate px-4 py-2 text-sm font-semibold text-white">Add team</button>
-      </div>
+      <input name="season" placeholder="Season" required />
+      <button className="hs-button whitespace-nowrap">Add team</button>
     </form>
   );
 }
@@ -48,16 +45,16 @@ export function PlayerForm({ teams }: { teams: Team[] }) {
       <input name="firstName" placeholder="First name" required />
       <input name="lastName" placeholder="Last name" required />
       <input name="jerseyNumber" placeholder="Jersey #" type="number" min="0" max="99" required />
-      <button className="rounded-lg bg-slate px-4 py-2 text-sm font-semibold text-white">Add player</button>
+      <button className="hs-button whitespace-nowrap">Add player</button>
     </form>
   );
 }
 
 export function OpponentForm() {
   return (
-    <form action={createOpponentAction} className="flex gap-3">
+    <form action={createOpponentAction} className="flex flex-col gap-3 sm:flex-row">
       <input name="name" placeholder="Opponent name" required />
-      <button className="rounded-lg bg-slate px-4 py-2 text-sm font-semibold text-white">Add opponent</button>
+      <button className="hs-button whitespace-nowrap">Add opponent</button>
     </form>
   );
 }
@@ -96,11 +93,12 @@ export function GameForm({
         <input name="opponentColor" placeholder="Opponent color" required />
       </div>
 
-      <div className="rounded-2xl border border-line bg-mist/60 p-4">
-        <p className="mb-3 text-sm font-semibold text-ink">Roster snapshot</p>
-        <div className="grid gap-2 md:grid-cols-3">
+      <div className="hs-subtle p-5">
+        <p className="text-sm font-semibold text-brand-ink">Roster snapshot</p>
+        <p className="mt-1 text-sm text-brand-muted">Freeze the active players for this game before processing begins.</p>
+        <div className="mt-4 grid gap-2 md:grid-cols-3">
           {players.map((player) => (
-            <label key={player.id} className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-sm">
+            <label key={player.id} className="flex items-center gap-2 rounded-2xl border border-brand-green/10 bg-white px-3 py-3 text-sm text-brand-ink">
               <input className="h-4 w-4" type="checkbox" name="rosterPlayerIds" value={player.id} />
               <span>
                 #{player.jerseyNumber} {player.firstName} {player.lastName}
@@ -110,22 +108,12 @@ export function GameForm({
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 text-sm text-brand-muted">
         <input className="h-4 w-4" type="checkbox" name="shadowMode" defaultChecked />
         Enable shadow mode for this game
       </label>
 
-      <button className="w-fit rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white">Create game</button>
-    </form>
-  );
-}
-
-export function VideoUploadForm({ gameId }: { gameId: string }) {
-  return (
-    <form action={uploadVideoAction} className="grid gap-4">
-      <input type="hidden" name="gameId" value={gameId} />
-      <input type="file" name="video" accept="video/*" required />
-      <button className="w-fit rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white">Upload video</button>
+      <button className="hs-button w-fit">Create game</button>
     </form>
   );
 }
@@ -134,7 +122,7 @@ export function TriggerProcessingForm({ gameId }: { gameId: string }) {
   return (
     <form action={triggerProcessingAction}>
       <input type="hidden" name="gameId" value={gameId} />
-      <button className="rounded-lg bg-slate px-4 py-2 text-sm font-semibold text-white">Run mock processing</button>
+      <button className="hs-button">Run mock processing</button>
     </form>
   );
 }
@@ -160,9 +148,9 @@ export function ReviewDecisionForm({
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-      <div className="rounded-2xl border border-line bg-mist/60 p-6">
-        <p className="text-xs uppercase tracking-[0.3em] text-slate/60">Clip Placeholder</p>
-        <div className="mt-4 flex min-h-72 items-center justify-center rounded-2xl border border-dashed border-line bg-white text-sm text-slate/70">
+      <div className="hs-subtle p-6">
+        <p className="text-sm font-semibold text-brand-ink">Clip preview</p>
+        <div className="mt-4 flex min-h-72 items-center justify-center rounded-[1.25rem] border border-dashed border-brand-line bg-white text-sm text-brand-muted">
           {item.clipUrl || "No clip extracted"}
         </div>
       </div>
@@ -226,18 +214,18 @@ export function ReviewDecisionForm({
         </div>
         <textarea name="note" rows={4} defaultValue={item.note ?? ""} placeholder="Reviewer note" />
         <div className="flex flex-wrap items-center gap-3">
-          <button className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white">Save and move next</button>
+          <button className="hs-button">Save and move next</button>
           {previousItemId ? (
-            <a className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-slate" href={`/review?item=${previousItemId}`}>
+            <a className="hs-button-secondary text-brand-ink-soft" href={`/review?item=${previousItemId}`}>
               Previous
             </a>
           ) : null}
           {nextItemId ? (
-            <a className="rounded-lg border border-line px-4 py-2 text-sm font-semibold text-slate" href={`/review?item=${nextItemId}`}>
+            <a className="hs-button-secondary text-brand-ink-soft" href={`/review?item=${nextItemId}`}>
               Next
             </a>
           ) : null}
-          <p className="text-xs text-slate/60">Shortcuts: use tab + enter for fast review on desktop.</p>
+          <p className="text-xs text-brand-muted">Shortcut: use tab plus enter for faster desktop review.</p>
         </div>
       </form>
     </div>

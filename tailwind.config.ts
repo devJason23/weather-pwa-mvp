@@ -16,10 +16,22 @@ const config: Config = {
         success: "#166534",
         warning: "#92400e",
         danger: "#991b1b",
-        accent: "#0f766e"
+        accent: "#0f766e",
+        "brand-green": "var(--brand-green)",
+        "brand-green-deep": "var(--brand-green-deep)",
+        "brand-green-soft": "var(--brand-green-soft)",
+        "brand-ink": "var(--brand-ink)",
+        "brand-ink-soft": "var(--brand-ink-soft)",
+        "brand-muted": "var(--brand-muted)",
+        "brand-line": "var(--brand-line)",
+        "brand-surface": "var(--brand-surface)",
+        "brand-surface-soft": "var(--brand-surface-soft)",
+        "brand-page": "var(--brand-page)",
+        "brand-silver": "var(--brand-silver)"
       },
       boxShadow: {
-        panel: "0 20px 60px rgba(15, 23, 42, 0.08)"
+        panel: "var(--shadow-panel)",
+        soft: "var(--shadow-soft)"
       }
     }
   },

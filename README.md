@@ -1,6 +1,6 @@
-# CourtReview AI
+# HoopSmith
 
-CourtReview AI is a desktop-first admin MVP for post-game youth basketball stat review. Admins upload a full game video, run a mocked AI extraction workflow, review low-confidence events, and only publish official stats after review is complete and scores reconcile.
+HoopSmith is a desktop-first admin MVP for post-game basketball stat review. Admins upload a full game video, run a mocked AI extraction workflow, review low-confidence events, and only publish official stats after review is complete and scores reconcile.
 
 ## Stack
 
@@ -69,12 +69,13 @@ npm run dev
 Default admin credentials come from `.env`:
 
 - email: `admin@courtreview.local`
-- password: `changeme`
+- password: whatever you set in `.env`
 
 ## Workflow
 
 1. Create a game from `/games/new`.
 2. Upload a full game video from the game upload page.
+   If a game already exists, open that game and use the re-upload flow to replace the attached video without creating a new game record.
 3. Run mock processing on the game detail page.
 4. Review flagged events in `/review`.
 5. Rebuild official stats or let the workflow mark the game official once pending review reaches zero.
@@ -97,6 +98,12 @@ Default admin credentials come from `.env`:
 - Background processing is synchronous behind the `triggerMockProcessing` abstraction
 - Video clips are placeholder URLs instead of real extracted subclips
 - Storage uses the local filesystem, but the code is shaped like a swappable storage driver
+
+## Local upload limits
+
+- Local development uploads are saved under `storage/uploads`
+- Maximum local upload size is `1 GB` (`1073741824` bytes)
+- The limit is configured centrally in `lib/config.ts`
 
 ## Recommended next steps
 
