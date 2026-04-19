@@ -1,3 +1,5 @@
+import { initRadar, fetchKSGFAlerts } from './radar.js';
+
 // Springfield, MO coordinates
 const LAT = 37.2090;
 const LON = -93.2923;
@@ -5,6 +7,7 @@ const LON = -93.2923;
 const API_URL = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current_weather=true&hourly=temperature_2m,precipitation_probability,weathercode&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=America%2FChicago`;
 
 const weatherDiv = document.getElementById('weather');
+const alertsDiv = document.getElementById('alerts');
 
 const WMO_CODES = {
   0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
@@ -38,5 +41,26 @@ async function fetchWeather() {
   }
 }
 
+async function updateAlerts() {
+  try {
+    const alerts = await fetchKSGFAlerts();
+    const count = alerts.length;
+    alertsDiv.textContent = count === 0
+      ? 'Active NWS alerts: 0'
+      : `Active NWS alerts: ${count}`;
+  } catch (err) {
+    alertsDiv.textContent = `Alerts unavailable: ${err.message}`;
+  }
+}
+
+const map = L.map('map').setView([LAT, LON], 8);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 19,
+}).addTo(map);
+initRadar(map);
+
 fetchWeather();
+updateAlerts();
 setInterval(fetchWeather, 300000); // Refresh every 5 minutes
+setInterval(updateAlerts, 300000); // Refresh every 5 minutes
