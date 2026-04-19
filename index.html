@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <title>Weather PWA MVP</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #0d1b2a; color: #fff; margin: 0; padding: 20px; }
+    h1 { color: #00bfff; }
+    #weather { margin-top: 20px; font-size: 1.2em; }
+    .card { background: #1b2a3b; border-radius: 12px; padding: 20px; max-width: 400px; }
+    .temp { font-size: 3em; font-weight: bold; }
+    .desc { text-transform: capitalize; color: #aaa; }
+  </style>
+</head>
+<body>
+  <h1>⛈ Weather PWA — Springfield, MO</h1>
+  <div id="weather"><p>Loading weather...</p></div>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registered'))
+        .catch(err => console.error('SW error:', err));
+    }
+  </script>
+</body>
+</html>
